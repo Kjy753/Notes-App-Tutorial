@@ -49,6 +49,13 @@ public class CreateNoteActivity extends AppCompatActivity {
                 /*EEEE  => Save 'EEEE,MMMM' to project-level dictionary 로 저장*/
         );
 
+        ImageView imageSave = findViewById(R.id.imagesave);
+        imageSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                saveNote();
+            }
+        });
     }
 
     private void saveNote(){
