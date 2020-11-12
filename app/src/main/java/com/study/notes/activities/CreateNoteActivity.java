@@ -4,11 +4,22 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.study.notes.R;
+import com.study.notes.entities.Note;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class CreateNoteActivity extends AppCompatActivity {
+
+    private EditText inputNotetitle, inputNoteSubtitle, inputNoteText;
+    private TextView textDateTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,5 +33,37 @@ public class CreateNoteActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        inputNotetitle = findViewById(R.id.inputNoteTitle);
+        inputNoteSubtitle = findViewById(R.id.inputNoteSubtitle);
+        inputNoteText = findViewById(R.id.inputNote);
+        textDateTime = findViewById(R.id.textDateTime);
+
+        textDateTime.setText(
+                new SimpleDateFormat("EEEE, dd MMMM yyyy HH:mm a", Locale.getDefault())    //EEEE, dd MMMM yyyy HH:mm a = Saturday,13 June 2020 21:09 PM
+                .format(new Date())
+                /*EEEE  => Save 'EEEE,MMMM' to project-level dictionary 로 저장*/
+        );
+
     }
+
+    private void saveNote(){
+        //유효성 검사
+        if(inputNotetitle.getText().toString().trim().isEmpty()){
+            Toast.makeText(this, "메모 제목은 비워 둘 수 없습니다.",Toast.LENGTH_SHORT).show();
+            return;
+        } else if(inputNoteSubtitle.getText().toString().trim().isEmpty()
+                && inputNoteText.getText().toString().trim().isEmpty()){
+            Toast.makeText(this,"노트 내용은 비워 둘 수 없습니다.",Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+
+
+
+
+
+    }
+
+
 }
