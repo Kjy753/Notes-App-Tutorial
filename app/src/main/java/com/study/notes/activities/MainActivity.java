@@ -2,12 +2,19 @@ package com.study.notes.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.study.notes.R;
+import com.study.notes.database.NotesDatabase;
+import com.study.notes.entities.Note;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,5 +35,31 @@ public class MainActivity extends AppCompatActivity {
                 );
             }
         });
+
+        getNotes();
+    }
+
+    // 데이터 베이스에서 노트를 가져오는 데도 비동기 작업이 필요합니다.
+    private void getNotes(){
+
+        @SuppressLint("StaticFieldLeak")
+        class GetNoteTask extends AsyncTask<Void, Void, List<Note>>{
+            @Override
+            protected List<Note> doInBackground(Void... voids) {
+
+                return NotesDatabase
+                        .getDatabase(getApplicationContext())
+                        .noteDao().getAllNotes();
+            }
+
+            @Override
+            protected void onPostExecute(List<Note> notes) {
+                super.onPostExecute(notes);
+                Log.d("MY_NOTES",notes.toString());
+                // 현재는 로그켓이 메모내용 출력
+            }
+        }
+        new GetNoteTask().execute();
+
     }
 }
