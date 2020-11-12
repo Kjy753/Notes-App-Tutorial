@@ -19,7 +19,7 @@ public interface NoteDao {
                                     "entities"패키지 안에 만든 항목을 선택했는지 확인하고
                                     선택할 때마다 기억하세요.*/
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void inserNote(Note note);
+    void insertNote(Note note);
 
     @Delete
     void deleteNote(Note note);

@@ -2,6 +2,9 @@ package com.study.notes.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -10,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.study.notes.R;
+import com.study.notes.database.NotesDatabase;
 import com.study.notes.entities.Note;
 
 import java.text.SimpleDateFormat;
@@ -58,11 +62,32 @@ public class CreateNoteActivity extends AppCompatActivity {
             return;
         }
 
+        //데이터 베이스에 저장할 노트 객체 준비
+        final Note note = new Note();
+        note.setTitle(inputNotetitle.getText().toString() );
+        note.setSubtitle(inputNoteSubtitle.getText().toString());
+        note.setNoteText(inputNoteText.getText().toString());
+        note.setDateTime(textDateTime.getText().toString());
 
+        @SuppressLint("StaticFieldLeak")
+        class SaveNoteTask extends AsyncTask<Void, Void,Void>{
 
+            @Override
+            protected Void doInBackground(Void... voids) {
+                NotesDatabase.getDatabase(getApplicationContext()).noteDao().insertNote(note);
+                return null;
+            }
 
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
 
-
+                Intent  intent = new Intent();
+                setResult(RESULT_OK,intent);
+                finish();
+            }
+        }
+        new SaveNoteTask().execute();
     }
 
 
