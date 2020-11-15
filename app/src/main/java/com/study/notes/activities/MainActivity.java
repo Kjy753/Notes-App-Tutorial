@@ -73,8 +73,21 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(List<Note> notes) {
                 super.onPostExecute(notes);
-                Log.d("MY_NOTES",notes.toString());
-                // 현재는 로그켓이 메모내용 출력
+                if(noteList.size() == 0){
+                    /* 화면의 노트 목록이 비어있다면*/
+                    noteList.addAll(notes);
+                    /*notes 의 모든 목록을 noteList에 모두 추가합니다*/
+                    notesAdapter.notifyDataSetChanged();
+                    /*notesAdapter DataSet 이 변함을 알려줍니다.*/
+                } else {
+                    /*noteList 가 비어있지 않다면 데이터 베이스에서 노트가 이미 로드 되어있음을 의미합니다.*/
+                    noteList.add(0,notes.get(0));
+                    /*noteList 에 최신 목록만 추가*/
+                    notesAdapter.notifyItemInserted(0);
+                    /*어댑터에 새 노트가 삽입되었음을 알림*/
+                }
+                notesRecyclerView.smoothScrollToPosition(0);
+                /*RecyclerVIew 의 스크롤 위치를 맨 위로 스크롤*/
             }
         }
         new GetNoteTask().execute();
