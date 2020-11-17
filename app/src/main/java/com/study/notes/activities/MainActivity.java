@@ -1,5 +1,6 @@
 package com.study.notes.activities;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -40,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(
                         new Intent(getApplicationContext(), CreateNoteActivity.class),
                         REQUEST_CODE_ADD_NOTE
+                        /*createNoteActivity 에서 노트를 새로 작성해 추가한 후
+                         onActivityResult 메서드에서 결과를 처리하여 노트 목록을 업데이트 해야합니다.*/
                 );
             }
         });
@@ -92,5 +95,13 @@ public class MainActivity extends AppCompatActivity {
         }
         new GetNoteTask().execute();
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_CODE_ADD_NOTE && resultCode == RESULT_OK){
+            getNotes();
+        }
     }
 }
