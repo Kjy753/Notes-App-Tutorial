@@ -52,11 +52,13 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
         TextView textTitle,textSubtitle, textDateTime;
 
 
+
          NoteViewHolder(@NonNull View itemView) {
             super(itemView);
             textTitle = itemView.findViewById(R.id.textTitle);
             textSubtitle = itemView.findViewById(R.id.textSubtitle);
             textDateTime = itemView.findViewById(R.id.textDateTime);
+
         }
 
         void setNote(Note note){
@@ -67,6 +69,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NoteViewHold
                  textSubtitle.setText(note.getSubtitle());
              }
              textDateTime.setText(note.getDateTime());
+
+
         }
     }
 }

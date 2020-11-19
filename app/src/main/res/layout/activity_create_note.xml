@@ -131,7 +131,7 @@
                 android:includeFontPadding="false"
                 android:inputType="textMultiLine"
                 android:minHeight="@dimen/_100sdp"
-                android:textColorHint="@color/colorTextHint"
+                android:textColorHint= "@color/colorTextHint"
                 android:textColor="@color/colorwhite"
                 android:textSize="@dimen/_13ssp"
                 app:layout_constraintBottom_toBottomOf="parent"
