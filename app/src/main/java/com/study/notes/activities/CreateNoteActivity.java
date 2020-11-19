@@ -88,6 +88,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         note.setSubtitle(inputNoteSubtitle.getText().toString());
         note.setNoteText(inputNoteText.getText().toString());
         note.setDateTime(textDateTime.getText().toString());
+        note.setColor(selectedNoteColor);
 
 
         @SuppressLint("StaticFieldLeak")
