@@ -176,7 +176,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/layoutAddUri"
+        android:id="@+id/layoutAddUrl"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_35sdp"
         android:layout_marginStart="@dimen/_10sdp"
