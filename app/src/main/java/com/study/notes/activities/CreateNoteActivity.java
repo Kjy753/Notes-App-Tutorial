@@ -121,6 +121,11 @@ public class CreateNoteActivity extends AppCompatActivity {
         note.setColor(selectedNoteColor);
         note.setImagePath(selectedImagePath);
 
+        if(layoutWebURL.getVisibility()== View.VISIBLE){
+            // layoutWebURL 이 표시 되는지 확인
+            note.setWeblink(textWebURL.getText().toString());
+        }
+
 
         @SuppressLint("StaticFieldLeak")
         class SaveNoteTask extends AsyncTask<Void, Void,Void>{
@@ -248,6 +253,13 @@ public class CreateNoteActivity extends AppCompatActivity {
             }
         });
 
+        layoutMiscellaneous.findViewById(R.id.layoutAddUrl).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                showAddURLDialog();
+            }
+        });
 
     }
 
