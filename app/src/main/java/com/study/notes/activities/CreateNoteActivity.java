@@ -58,6 +58,8 @@ public class CreateNoteActivity extends AppCompatActivity {
 
     private AlertDialog dialogAddURL;
 
+    private Note alreadyAvailablleNote;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,8 +99,24 @@ public class CreateNoteActivity extends AppCompatActivity {
     selectedNoteColor = "#333333";  /*Default note color => colorSearchBackground*/
     selectedImagePath = "";
 
+    if(getIntent().getBooleanExtra("isViewOrUpdate",false)){
+        alreadyAvailablleNote = (Note) getIntent().getSerializableExtra("note");
+        setViewOrUpdateNote();
+    }
+
         initMiscellaneous();
         setSubtitleIndicatorColor();
+    }
+
+    private void setViewOrUpdateNote(){
+        inputNotetitle.setText(alreadyAvailablleNote.getTitle());
+        inputNoteSubtitle.setText(alreadyAvailablleNote.getSubtitle());
+        inputNoteText.setText(alreadyAvailablleNote.getNoteText());
+        textDateTime.setText(alreadyAvailablleNote.getDateTime());
+        if(alreadyAvailablleNote.getImagePath() != null && !alreadyAvailablleNote.getWeblink().trim().isEmpty()){
+            textWebURL.setText(alreadyAvailablleNote.getWeblink());
+            layoutWebURL.setVisibility(View.VISIBLE );
+        }
     }
 
     private void saveNote(){
@@ -124,6 +142,14 @@ public class CreateNoteActivity extends AppCompatActivity {
         if(layoutWebURL.getVisibility()== View.VISIBLE){
             // layoutWebURL 이 표시 되는지 확인
             note.setWeblink(textWebURL.getText().toString());
+        }
+
+        if(alreadyAvailablleNote != null){
+            note.setId(alreadyAvailablleNote.getId());
+        /*
+            여기에서는 이미 사용 가능한 노트에서 새 노트의 ID를 설정합니다.
+            NoteDao 에서 onConflictStrategy를 "REPLACE"로 설정 했으므로
+            이는 새 노트의 ID가 이미 데이터베이스에서 사용 가능하면 새 노트로 교체되고 노트가 업데이트됨을 의미합니다.*/
         }
 
 
@@ -233,6 +259,24 @@ public class CreateNoteActivity extends AppCompatActivity {
                 setSubtitleIndicatorColor();
             }
         });
+
+        if(alreadyAvailablleNote != null && alreadyAvailablleNote.getColor() != null && !alreadyAvailablleNote.getColor().trim().isEmpty()){
+            switch (alreadyAvailablleNote.getColor()){
+                case "#FDBE3B":
+                     layoutMiscellaneous.findViewById(R.id.viewColor2).performClick();
+                     break;
+                case "#FF4842":
+                    layoutMiscellaneous.findViewById(R.id.viewColor3).performClick();
+                    break;
+                case "#3A52FC":
+                    layoutMiscellaneous.findViewById(R.id.viewColor4).performClick();
+                    break;
+                case "#000000":
+                    layoutMiscellaneous.findViewById(R.id.viewColor5).performClick();
+                    break;
+
+            }
+        }
 
         layoutMiscellaneous.findViewById(R.id.layoutAddImage).setOnClickListener(new View.OnClickListener() {
             @Override
