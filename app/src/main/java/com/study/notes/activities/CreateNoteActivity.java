@@ -135,6 +135,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         if(alreadyAvailablleNote.getImagePath() != null && !alreadyAvailablleNote.getImagePath().trim().isEmpty()){
             imageNote.setImageBitmap(BitmapFactory.decodeFile(alreadyAvailablleNote.getImagePath()));
             imageNote.setVisibility(View.VISIBLE);
+            findViewById(R.id.imageRemoveImage).setVisibility(View.VISIBLE);
             selectedImagePath = alreadyAvailablleNote.getImagePath();
             /*저장된 노트에 이미지 패스 를 찾아서 보여줌.*/
         }
