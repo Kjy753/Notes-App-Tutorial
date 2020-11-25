@@ -104,6 +104,24 @@ public class CreateNoteActivity extends AppCompatActivity {
         setViewOrUpdateNote();
     }
 
+    findViewById(R.id.imageRemoveWebURL).setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            textWebURL.setText(null);
+            layoutWebURL.setVisibility(View.GONE);
+        }
+    });
+
+    findViewById(R.id.imageRemoveImage).setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            imageNote.setImageBitmap(null);
+            imageNote.setVisibility(View.GONE);
+            findViewById(R.id.imageRemoveImage).setVisibility(View.GONE);
+            selectedImagePath = "";
+        }
+    });
+
         initMiscellaneous();
         setSubtitleIndicatorColor();
     }
