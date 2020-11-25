@@ -113,10 +113,9 @@ public class CreateNoteActivity extends AppCompatActivity {
         inputNoteSubtitle.setText(alreadyAvailablleNote.getSubtitle());
         inputNoteText.setText(alreadyAvailablleNote.getNoteText());
         textDateTime.setText(alreadyAvailablleNote.getDateTime());
-        if(alreadyAvailablleNote.getImagePath() != null && !alreadyAvailablleNote.getWeblink().trim().isEmpty()){
-            textWebURL.setText(alreadyAvailablleNote.getWeblink());
-            layoutWebURL.setVisibility(View.VISIBLE );
-        }
+
+
+
     }
 
     private void saveNote(){
