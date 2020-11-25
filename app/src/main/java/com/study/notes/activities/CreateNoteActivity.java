@@ -376,6 +376,7 @@ public class CreateNoteActivity extends AppCompatActivity {
                     Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
                     imageNote.setImageBitmap(bitmap);
                     imageNote.setVisibility(View.VISIBLE);
+                    findViewById(R.id.imageRemoveImage).setVisibility(View.VISIBLE) ;
 
                     selectedImagePath = getPathFromUri(selectedIamgeUri);
 
