@@ -114,7 +114,18 @@ public class CreateNoteActivity extends AppCompatActivity {
         inputNoteText.setText(alreadyAvailablleNote.getNoteText());
         textDateTime.setText(alreadyAvailablleNote.getDateTime());
 
+        if(alreadyAvailablleNote.getImagePath() != null && !alreadyAvailablleNote.getImagePath().trim().isEmpty()){
+            imageNote.setImageBitmap(BitmapFactory.decodeFile(alreadyAvailablleNote.getImagePath()));
+            imageNote.setVisibility(View.VISIBLE);
+            selectedImagePath = alreadyAvailablleNote.getImagePath();
+            /*저장된 노트에 이미지 패스 를 찾아서 보여줌.*/
+        }
 
+        if(alreadyAvailablleNote.getWeblink() != null && !alreadyAvailablleNote.getWeblink().trim().isEmpty()){
+            textWebURL.setText(alreadyAvailablleNote.getWeblink());
+            layoutWebURL.setVisibility(View.VISIBLE);
+            /*저장된 노트에 webURL 이 있으면 찾아서 layoutWebURL에 추가해서 보여줌*/
+        }
 
     }
 
