@@ -94,21 +94,25 @@ public class MainActivity extends AppCompatActivity implements NotesListener {
             @Override
             protected void onPostExecute(List<Note> notes) {
                 super.onPostExecute(notes);
-                if(noteList.size() == 0){
-                    /* 화면의 노트 목록이 비어있다면*/
+                if(requestcode == REQUEST_CODE_SHOW_NOTES){
                     noteList.addAll(notes);
-                    /*notes 의 모든 목록을 noteList에 모두 추가합니다*/
+                    //전체 노트 보여주기
                     notesAdapter.notifyDataSetChanged();
-                    /*notesAdapter DataSet 이 변함을 알려줍니다.*/
-                } else {
-                    /*noteList 가 비어있지 않다면 데이터 베이스에서 노트가 이미 로드 되어있음을 의미합니다.*/
+                }else if(requestcode == REQUEST_CODE_ADD_NOTE){
                     noteList.add(0,notes.get(0));
-                    /*noteList 에 최신 목록만 추가*/
+                    //노트 추가
                     notesAdapter.notifyItemInserted(0);
-                    /*어댑터에 새 노트가 삽입되었음을 알림*/
+                    //데이터 베이스에 노트 추가
+                    notesRecyclerView.smoothScrollToPosition(0);
+                    // 노트 목록 최상단으로 옮기기
+                }else if(requestcode == REQUEST_CODE_UPDATE_NOTE){
+                    noteList.remove(noteClickedPosition);
+                    // 현재 포지션 지우기
+                    noteList.add(noteClickedPosition,notes.get(noteClickedPosition));
+                    //노트 목록에 새로운 노트 포지션을 맨위로 추가
+                    notesAdapter.notifyItemChanged(noteClickedPosition);
+                    // 반영.
                 }
-                notesRecyclerView.smoothScrollToPosition(0);
-                /*RecyclerVIew 의 스크롤 위치를 맨 위로 스크롤*/
             }
         }
         new GetNoteTask().execute();
