@@ -342,7 +342,8 @@ public class CreateNoteActivity extends AppCompatActivity {
             layoutMiscellaneous.findViewById(R.id.layoutDeleteNote).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    bottomSheetBehavior.setState(bottomSheetBehavior.STATE_COLLAPSED);
+                    showDeleteNoteDialog();
                 }
             });
         }
