@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements NotesListener {
         notesRecyclerView.setAdapter(notesAdapter);
 
 
-        getNotes(REQUEST_CODE_SHOW_NOTES);
+        getNotes(REQUEST_CODE_SHOW_NOTES,false);
         /*getNotes 메소드는 onCreate 메소드에서 호출이 됩니다.
         * 즉, 응용 프로그램이 방금 시작 되었고 DB의 모든 메모를 표시해야 하며
         * 이것이 REQUEST_CODE_SHOW_NOTES 를 해당 메소드에 전달 해주어야
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements NotesListener {
     }
 
     // 데이터 베이스에서 노트를 가져오는 데도 비동기 작업이 필요합니다.
-    private void getNotes(final int requestcode){
+    private void getNotes(final int requestcode , final boolean isNoteDeleted){
             /*요청 코드를 getNotes 매개변수로 넣기.*/
         @SuppressLint("StaticFieldLeak")
         class GetNoteTask extends AsyncTask<Void, Void, List<Note>>{
@@ -112,6 +112,18 @@ public class MainActivity extends AppCompatActivity implements NotesListener {
                     //노트 목록에 새로운 노트 포지션을 맨위로 추가
                     notesAdapter.notifyItemChanged(noteClickedPosition);
                     // 반영.
+
+                        if(isNoteDeleted){ /*메모를 삭제한 다음 메모 삭제 여부를 확인 해줍니다.*/
+                            notesAdapter.notifyItemRemoved(noteClickedPosition);
+                            /*노트가 삭제되면 어댑터에 제거 된 항목에 대하여 알려줍니다.*/
+                        }else {
+                            noteList.add(noteClickedPosition, notes.get(noteClickedPosition));
+                            notesAdapter.notifyItemChanged(noteClickedPosition);
+                            /*      삭제 되지 않은경우에는 업데이트 해야하므로
+                                    제거된 동일한 위체에 새로 업데이트 된 노트를 추가하고,
+                                    변경된 항목에 대해 어댑터에 알립니다.*/
+
+                        }
                 }
             }
         }
@@ -123,10 +135,13 @@ public class MainActivity extends AppCompatActivity implements NotesListener {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == REQUEST_CODE_ADD_NOTE && resultCode == RESULT_OK){
-            getNotes(REQUEST_CODE_ADD_NOTE);
+            getNotes(REQUEST_CODE_ADD_NOTE,false);
         } else if(requestCode == REQUEST_CODE_UPDATE_NOTE && resultCode == RESULT_OK){
             if(data != null){
-                getNotes(REQUEST_CODE_UPDATE_NOTE);
+                getNotes(REQUEST_CODE_UPDATE_NOTE,data.getBooleanExtra("isNoteDeleted", false));
+                /*이는 데이터베이스에서 이미 사용 가능한 노트를 업데이트하고 있음을 의미하며,
+                따라서 매개 변수가 NoteDeleted이므로 CreateNoteActivity에서 값을 전달합니다.
+                노트가 삭제되었는지 여부에 관계없이 "isNoteDeleted"키가있는 인 텐트 데이터를 사용하지 않습니다.*/
             }
         }
     }
