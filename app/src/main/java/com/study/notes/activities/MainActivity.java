@@ -9,7 +9,10 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -18,6 +21,8 @@ import com.study.notes.adapters.NotesAdapter;
 import com.study.notes.database.NotesDatabase;
 import com.study.notes.entities.Note;
 import com.study.notes.listeners.NotesListener;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +72,26 @@ public class MainActivity extends AppCompatActivity implements NotesListener {
         * 즉, 응용 프로그램이 방금 시작 되었고 DB의 모든 메모를 표시해야 하며
         * 이것이 REQUEST_CODE_SHOW_NOTES 를 해당 메소드에 전달 해주어야
         * 전체 메모가 한번에 나옵니다.*/
+
+        EditText inputSearch = findViewById(R.id.inputSearch);
+        inputSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+             notesAdapter.cancelTimer();
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(noteList.size() != 0){
+                    notesAdapter.searchNotes(editable.toString());
+                }
+            }
+        });
     }
 
     @Override
