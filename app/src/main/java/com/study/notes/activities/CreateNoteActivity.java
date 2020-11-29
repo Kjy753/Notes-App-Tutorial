@@ -123,8 +123,20 @@ public class CreateNoteActivity extends AppCompatActivity {
         }
     });
 
-        initMiscellaneous();
-        setSubtitleIndicatorColor();
+    if(getIntent().getBooleanExtra("isFromQuickAction",false)){
+        String type = getIntent().getStringExtra("quickActionType");
+        if(type != null){
+            if(type.equals("image")){
+                selectedImagePath = getIntent().getStringExtra("imagePath");
+                imageNote.setImageBitmap((BitmapFactory.decodeFile(selectedImagePath)));
+                imageNote.setVisibility(View.VISIBLE);
+                findViewById(R.id.imageRemoveImage).setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    initMiscellaneous();
+    setSubtitleIndicatorColor();
     }
 
     private void setViewOrUpdateNote(){

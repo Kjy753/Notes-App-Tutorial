@@ -1,14 +1,22 @@
 package com.study.notes.activities;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -22,7 +30,6 @@ import com.study.notes.database.NotesDatabase;
 import com.study.notes.entities.Note;
 import com.study.notes.listeners.NotesListener;
 
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements NotesListener {
     public static final int REQUEST_CODE_ADD_NOTE = 1;
     public static final int REQUEST_CODE_UPDATE_NOTE = 2;   /*메모를 업데이트 하는데 사용 되는 REQUEST_CODE*/
     public static final int REQUEST_CODE_SHOW_NOTES = 3;    /*모든 코드를 보여줄떄 사용하는 코드*/
+    public static final int REQUEST_CODE_SELECT_IMAGE = 4;
+    public static final int REQUEST_CODE_STORAGE_PERMISSION = 5;
 
     private RecyclerView notesRecyclerView;
     private List<Note> noteList;
@@ -92,6 +101,68 @@ public class MainActivity extends AppCompatActivity implements NotesListener {
                 }
             }
         });
+
+        findViewById(R.id.imageAddNote).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivityForResult(
+                        new Intent(getApplicationContext(), CreateNoteActivity.class),
+                        REQUEST_CODE_ADD_NOTE
+                );
+            }
+        });
+
+        findViewById(R.id.imageAddNote).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(ContextCompat.checkSelfPermission(
+                        getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED){
+                    ActivityCompat.requestPermissions(
+                            MainActivity .this,
+                            new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
+                            REQUEST_CODE_STORAGE_PERMISSION
+                    );
+                }else  {
+                    selectImage();
+                }
+            }
+        });
+    }
+
+    private void selectImage(){
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        if(intent.resolveActivity(getPackageManager()) != null){
+            startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode == REQUEST_CODE_STORAGE_PERMISSION && grantResults.length > 0){
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                selectImage();
+            } else{
+                Toast.makeText(this,"Permission Denied",Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private String getPathFromUri(Uri contentUri){
+        String filePath;
+        Cursor cursor = getContentResolver()
+                .query(contentUri, null, null,null,null);
+        if(cursor == null){
+            filePath = contentUri.getPath();
+        } else {
+            cursor.moveToFirst();
+            int index = cursor.getColumnIndex("_data");
+            filePath = cursor.getString(index);
+            cursor.close();
+        }
+        return filePath;
+
     }
 
     @Override
@@ -156,6 +227,9 @@ public class MainActivity extends AppCompatActivity implements NotesListener {
 
     }
 
+
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -167,6 +241,22 @@ public class MainActivity extends AppCompatActivity implements NotesListener {
                 /*이는 데이터베이스에서 이미 사용 가능한 노트를 업데이트하고 있음을 의미하며,
                 따라서 매개 변수가 NoteDeleted이므로 CreateNoteActivity에서 값을 전달합니다.
                 노트가 삭제되었는지 여부에 관계없이 "isNoteDeleted"키가있는 인 텐트 데이터를 사용하지 않습니다.*/
+            }
+        }else if(requestCode == REQUEST_CODE_SELECT_IMAGE && resultCode == RESULT_OK){
+            if(data != null){
+                Uri selectedImageUri = data.getData();
+                if(selectedImageUri != null){
+                    try{
+                        String selectedImagePath = getPathFromUri(selectedImageUri);
+                        Intent intent = new Intent(getApplicationContext(),CreateNoteActivity.class);
+                        intent.putExtra("isFromQuickAction",true);
+                        intent.putExtra("quickActionType","image");
+                        intent.putExtra("imagePath",selectedImagePath);
+                        startActivityForResult(intent,REQUEST_CODE_ADD_NOTE);
+                    }catch (Exception exception){
+                        Toast.makeText(this,exception.getMessage(),Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         }
     }
