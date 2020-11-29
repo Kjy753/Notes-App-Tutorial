@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements NotesListener {
             }
         });
 
-        findViewById(R.id.imageAddNote).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.imageAddImage).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(ContextCompat.checkSelfPermission(
